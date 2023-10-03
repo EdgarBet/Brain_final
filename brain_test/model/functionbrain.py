@@ -1,4 +1,4 @@
-from selene import Browser, by, have
+from selene import Browser, by, have, be
 from selene.support.shared import browser
 import time
 from selene.support.shared.jquery_style import s, ss
@@ -17,9 +17,9 @@ class BrainFin:
         return self
 
     def city_select(self, *todos: str):
-        s('.mycity.container').click()
+        s('.mycity_container.mycity.mycityname[data-cityid="23562"]').click()
         time.sleep(1)
-        s('.city_selector').click()
+        s(by.text('Кременчук')).click()
         time.sleep(1)
         return self
 
@@ -30,19 +30,23 @@ class BrainFin:
     def authorization(self):
         ss(by.text('Увійти'))[0].click()
         ss('#modal-login-phone-field')[0].type('+38 (096) 607-20-14')
+        time.sleep(1)
         ss('#modal-login-password-field')[0].type('769f3858b5').press_enter()
-        s('user-panel-button.active').should(have.exact_text('Едуард'))
+        s('.user-panel-button.active').should(have.exact_text('Эдуард'))
         return self
 
     def search_text(self, checks: str):
-        s('#search').type(checks).press_enter()
+        ss('input.quick-search-input')[1].type(checks).press_enter()
         return self
 
     def price_sorting(self):
-        s('.price').click()
-        s('.price').click()
+        ss(by.text('Сортування за ціною'))[0].click()
+        s('[href="/ukr/category/Noutbuky-c1191/order=asc;sortby=price/"]').click()
         return self
 
+    def verification_price(self):
+        ss(by.text('Ціна: Від дешевих до дорогих'))[0].click()
+        return self
     def filter_by_price(self):
         s('.filter').click()
         return self
@@ -54,7 +58,7 @@ class BrainFin:
     def choose_goods(self):
         s(by.text("Ноутбуки і комп'ютери")).click()
         ss(by.text('Перейти'))[0].click()
-        s('[data-articul="82KB0006RA"]').click()
+        # s('[data-articul="82KB0006RA"]').click()
         return self
 
     def add_to_cart(self):
@@ -108,6 +112,10 @@ class BrainFin:
         browser.close()
         return self
 
+    def check_visible(self):
+        element = s('.search-products-count')
+        element.should(be.visible)
+        return self
 
 
 
